@@ -1,15 +1,20 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Col, Container, Row} from "react-bootstrap";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import {Link} from "react-router-dom";
+import 'react-inner-image-zoom/lib/InnerImageZoom/styles.css';
+import InnerImageZoom from 'react-inner-image-zoom';
+import SugestedProduct from "./SugestedProduct.jsx";
 
 const ProductDetails = (props) => {
+
+    const [prevImage,setPrevImage] = useState('0')
 
 
     const ChangeImg = (event) => {
         let imgSrc = event.target.getAttribute('src');
-        let previewImg = document.getElementById('previewImg');
-        previewImg.setAttribute('src', imgSrc);
+        setPrevImage(imgSrc)
+
     };
 
     const PriceOption = (price,special_price) => {
@@ -38,6 +43,7 @@ const ProductDetails = (props) => {
     let star = AllProductData['productList'][0]['star']
     let product_code = AllProductData['productList'][0]['product_code']
 
+
     let sortDescription = AllProductData['productDetails'][0]['short_description']
     let image_one = AllProductData['productDetails'][0]['image_one']
     let image_two = AllProductData['productDetails'][0]['image_two']
@@ -47,6 +53,10 @@ const ProductDetails = (props) => {
     let size = AllProductData['productDetails'][0]['size']
     let long_description = AllProductData['productDetails'][0]['long_description']
     let product_id = AllProductData['productDetails'][0]['product_id']
+
+    if (prevImage === "0"){
+        setPrevImage(image_one)
+    }
 
     let ColorDiv = 'd-none';
 
@@ -90,7 +100,8 @@ const ProductDetails = (props) => {
                     <Col className="shadow-sm bg-white pb-3 mt-4" md={12} lg={12} sm={12} xs={12}>
                         <Row>
                             <Col className="p-3" md={6} lg={6} sm={12} xs={12}>
-                                <img id="previewImg" className="w-100 bigImage" src={image_one} />
+                                {/*<img id="previewImg" className="w-100 bigImage" src={image_one} />*/}
+                                <InnerImageZoom className="detailimage" src={prevImage} zoomScale={1.8} zoomType={"hover"} zoomSrc={prevImage} />
                                 <Container  className="my-3">
                                     <Row>
                                         <Col className="p-0 m-0"  md={3} lg={3} sm={3} xs={3}>
@@ -170,6 +181,7 @@ const ProductDetails = (props) => {
                     </Col>
                 </Row>
             </Container>
+            <SugestedProduct subcategory={subcategory}/>
         </div>
     );
 };

@@ -68,7 +68,7 @@ const ProductDetailsPage = () => {
                 </div>
 
                         <ProductDetails data={productDetailsData} />
-                        <SugestedProduct />
+
 
                 <div className="Desktop">
                     <FooterDesktop/>

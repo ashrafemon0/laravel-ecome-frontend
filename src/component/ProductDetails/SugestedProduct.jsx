@@ -1,64 +1,95 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Card, Col, Container, Row} from "react-bootstrap";
 import {Link} from "react-router-dom";
+import axios from "axios";
 
-const SugestedProduct = () => {
-    return (
-        <div>
-            <Container fluid={true} className="text-center">
-                <div className="section-title text-center">
-                    <h2>YOU MAY LIKE THIS</h2>
-                    <p>Some Of Our Exclusive Collection, You May Like</p>
-                </div>
-                <Row>
+const BaseURL = "http://127.0.0.1:8000/api";
 
-                    <Col className="p-1" key={1} xl={3} lg={3} md={3} sm={6} xs={6}>
-                        <Link to="/productdetails">
-                            <Card className="image-box card">
-                                <img className="center" src="https://m.media-amazon.com/images/I/814ePfNubRL._AC_UY218_.jpg" />
-                                <Card.Body>
-                                    <p className="product-name-on-card">Realme C21 (Cross Black, 64 GB)</p>
-                                    <p className="product-price-on-card">Price : $120</p>
+const SugestedProduct = (props) => {
+    const [productData, setproductData] = useState([]);
 
-                                </Card.Body>
-                            </Card>
-                        </Link>
-                    </Col>
-                    <Col className="p-1" key={1} xl={3} lg={3} md={3} sm={6} xs={6}>
+    useEffect(() => {
+        let subcategory = props.subcategory
+        const url = (`${BaseURL}/similar/${subcategory}`);
+        axios
+            .get(url)
+            .then(function (response) {
+                setproductData(response.data);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }, []);
+
+    const MyList = productData;
+
+    if (MyList.length>0){
+        const MyView  = MyList.map((ProductList,i)=>{
+            if (ProductList.special_price === 'na'){
+                return  <Col className="p-1" key={1} xl={2} lg={2} md={2} sm={4} xs={6}>
+                    <Link to={"/productdetails/"+ProductList.id}>
                         <Card className="image-box card">
-                            <img className="center" src="https://m.media-amazon.com/images/I/812yohjGZ2L._AC_UY218_.jpg" />
+                            <img className="center" src={ProductList.product_image} />
                             <Card.Body>
-                                <p className="product-name-on-card">Realme C21 (Cross Black, 64 GB)</p>
-                                <p className="product-price-on-card">Price : $120</p>
+                                <p className="product-name-on-card">{ProductList.product_title.length > 30 ? `${ProductList.product_title.substring(0, 30)}...` : ProductList.product_title}</p>
+                                <p className="product-price-on-card">Price : ${ProductList.price}</p>
 
                             </Card.Body>
                         </Card>
-                    </Col>
-                    <Col className="p-1" key={1} xl={3} lg={3} md={3} sm={6} xs={6}>
+                    </Link>
+                </Col>
+            }else{
+                return  <Col className="p-1" key={1} xl={2} lg={2} md={2} sm={4} xs={6}>
+                    <Link to={"/productdetails/"+ProductList.id}>
                         <Card className="image-box card">
-                            <img className="center" src="https://m.media-amazon.com/images/I/61LB+d0vheL._AC_UY218_.jpg" />
+                            <img className="center" src={ProductList.product_image} />
                             <Card.Body>
-                                <p className="product-name-on-card">Realme C21 (Cross Black, 64 GB)</p>
-                                <p className="product-price-on-card">Price : $120</p>
+                                <p className="product-name-on-card">{ProductList.product_title.length > 30 ? `${ProductList.product_title.substring(0, 30)}...` : ProductList.product_title}</p>
+                                <p className="product-price-on-card">Price : <del className="text-secondary">${ProductList.price}</del>&nbsp;${ProductList.special_price} </p>
 
                             </Card.Body>
                         </Card>
-                    </Col>
-                    <Col className="p-1" key={1} xl={3} lg={3} md={3} sm={6} xs={6}>
-                        <Card className="image-box card">
-                            <img className="center" src="https://m.media-amazon.com/images/I/81RR0TAz+5L._AC_UY218_.jpg" />
-                            <Card.Body>
-                                <p className="product-name-on-card">Realme C21 (Cross Black, 64 GB)</p>
-                                <p className="product-price-on-card">Price : $120</p>
+                    </Link>
+                </Col>
+            }
+        })
+        return (
+            <div>
+                <Container fluid={true} className="text-center">
+                    <div className="section-title text-center">
+                        <h2>YOU MAY LIKE THIS</h2>
+                        <p>Some Of Our Exclusive Collection, You May Like</p>
+                    </div>
+                    <Row>
 
-                            </Card.Body>
-                        </Card>
-                    </Col>
+                        {MyView}
 
-                </Row>
-            </Container>
-        </div>
-    );
+                    </Row>
+                </Container>
+
+            </div>
+        );
+    }
+
+else{
+        return (
+            <div>
+                <Container fluid={true} className="text-center">
+                    <div className="section-title text-center">
+                        <h2>YOU MAY LIKE THIS</h2>
+                        <p>Some Of Our Exclusive Collection, You May Like</p>
+                    </div>
+                    <Row>
+
+                        <p>There is no related Product Here</p>
+
+                    </Row>
+                </Container>
+
+            </div>
+        )
+    }
+
 };
 
 export default SugestedProduct;

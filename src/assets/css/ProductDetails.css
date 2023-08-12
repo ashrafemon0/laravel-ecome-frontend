@@ -39,3 +39,10 @@ img.w-100.smallImage {
     font-family: 'Roboto Condensed', sans-serif;
     font-weight: 600;
 }
+
+.detailimage{
+    max-width: 60%;
+    height: 499px;
+    margin: 0px;
+    margin-left: 142px;
+}
